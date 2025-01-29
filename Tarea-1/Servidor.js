@@ -1,62 +1,63 @@
 const {ServerProtocol} = require("./Protocolo");
-const morse = require('morsa').default;
+const Morsa = require('morsa').default;
 const fs = require('fs');
 
-const content = 'Hola mundo';
-const ruta = './test.txt';
-const msg = `Escoge una operacion a realizar:
-  OP1. Enviar un correo 
-  OP2. Crear un archivo 
-  OP3. Borrar un archivo 
-  OP4. Traducir código morse 
+const morse = new Morsa();
+
+const msg = `Escoge una opción siguiendo el formato
+  1. Enviar un correo (OP1$$email::subject::content)
+  2. Crear un archivo (OP2$$path::content)
+  3. Borrar un archivo (OP3$$path)
+  4. Traducir código morse (OP4$$text)
   Escribe 'exit' para salir`;
 
+handleMessage = async ({header,body}) => {
 
-handleMessage = (message) => {
-
-      switch (message.header) {
+      switch (header.command) {
       case "OP1":
-        if (!message.body) return
-        sendEmail(message)
-        break;
+        return await sendEmail(body)
       case "OP2":
-        if (!message.body) return
-        createFile(ruta, content);
-      break;
+        return await createFile(body);
       case "OP3": 
-      if (!message.body) return
-        deleteFile(ruta);
-      break;
+        return await deleteFile(body);
       case "OP4":
-        if (!message.body) return
-        translateMorse(message);
+        return await translateMorse(body);
       default:
           return msg;
     }
   
 }
-sendEmail = (obj)=>{
-  return `Correo enviado a: ${obj}`; 
+
+//Enviar correo
+sendEmail = ({email,subject,content})=>{
+  return `Correo enviado a: ${email} con asunto: ${subject} y contenido: ${content}`; 
 }
-createFile = (ruta,content)=>{
-  fs.writeFile(ruta, content,  (err) => {
+
+//Crear file
+createFile = ({path,content})=>{
+  fs.writeFile(path, content,  (err) => {
     if (err) {
         return console.log(err);
     }
-    return "Archivo creado exitosamente"
   });
+  return "Archivo creado exitosamente"
 }
-deleteFile = (obj)=>{
+
+//Borrar file
+deleteFile = ({path})=>{
   try {
-    fs.unlinkSync(obj)
+    fs.unlinkSync(path)
     return 'Archivo eliminado exitosamente'
   } catch(err) {
     return 'Error, no se pudo eliminar el archivo'
   }
 }
-translateMorse = (obj)=>{
-    const resp = morse.decode(obj);
-    return resp
+
+//Traducir morse
+translateMorse = ({text})=>{
+    console.log("Traduciendo código morse...");
+
+    return morse.decode(text);
 }
 
 const server = new ServerProtocol(5000, handleMessage);

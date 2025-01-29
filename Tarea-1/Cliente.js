@@ -5,10 +5,8 @@ const readline = require("readline");
     const client = new ClientProtocol("localhost", 5000);
 
     try {
-  
     client.connect();
         
-  
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -30,7 +28,7 @@ const readline = require("readline");
         console.error("Error:", err.message);
     }
     });
-  } catch (err) {
+    } catch (err) {
     console.error("Error:", err.message);
-  }
+    }
 

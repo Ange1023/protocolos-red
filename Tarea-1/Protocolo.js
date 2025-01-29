@@ -1,5 +1,6 @@
 
 const net = require("net");
+const fm = require("./FormatMessage")
 
 class ServerProtocol {
   constructor(port = 5000, handleMessage) {
@@ -13,12 +14,13 @@ class ServerProtocol {
       console.log("Cliente conectado");
       socket.write(msg);
 
-      socket.on("data", (data) => {
+      socket.on("data", async (data) => {
         const message = data.toString().trim();
+       
         console.log("Cliente:", message);
-
   
-        const response = this.handleMessage(message);
+        const response = await this.handleMessage(fm.formatMessage(message));
+        
         if (response) {
           socket.write(response);
         }
