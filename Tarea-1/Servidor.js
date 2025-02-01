@@ -1,5 +1,6 @@
 const {ServerProtocol} = require("./Protocolo");
 const Morsa = require('morsa').default;
+const tp = require('./Transporter');
 const fs = require('fs');
 
 const morse = new Morsa();
@@ -30,6 +31,9 @@ handleMessage = async ({header,body}) => {
 
 //Enviar correo
 sendEmail = ({email,subject,content})=>{
+
+  tp.sendMail(email,subject,content);
+
   return `Correo enviado a: ${email} con asunto: ${subject} y contenido: ${content}`; 
 }
 
