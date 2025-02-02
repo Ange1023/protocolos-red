@@ -1,4 +1,4 @@
-const {ServerProtocol} = require("./Protocolo");
+const {ServerTCP,ServerUDP} = require("./Protocolo");
 const Morsa = require('morsa').default;
 const tp = require('./Transporter');
 const fs = require('fs');
@@ -64,6 +64,7 @@ translateMorse = ({text})=>{
     return morse.decode(text);
 }
 
-const server = new ServerProtocol(5000, handleMessage);
-server.start(msg);
-
+const serverTCP = new ServerTCP(5000, "localhost",handleMessage);
+const serverUDP = new ServerUDP(4000, "localhost", handleMessage);
+serverTCP.start(msg);
+serverUDP.start(msg);

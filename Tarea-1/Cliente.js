@@ -1,15 +1,18 @@
-const { ClientProtocol } = require("./Protocolo");
+const { handleProtocol } = require("./Protocolo");
 const readline = require("readline");
 
+let client = null;
 
-    const client = new ClientProtocol("localhost", 5000);
-
-    try {
-    client.connect();
+try {
         
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
+    });
+
+
+    rl.question("Escoge un protocolo (tcp/udp): ", (protocol) => {
+        client = handleProtocol(protocol);
     });
 
     rl.on("line", (input) => {
